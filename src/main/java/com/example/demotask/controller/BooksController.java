@@ -1,14 +1,24 @@
 package com.example.demotask.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.example.demotask.entity.Book;
+import com.example.demotask.service.BooksService;
+import lombok.AllArgsConstructor;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+@AllArgsConstructor
 @RestController
 @RequestMapping("api/books")
+
 public class BooksController {
+    private final BooksService booksService;
     @GetMapping
-    public String getBook(){
-        return "book";
+    public List<Book> getAllBook(){
+   return booksService.getAllBooks();
+    }
+    @PostMapping
+    @RequestMapping("/book")
+    public Long addBook(@RequestBody Book book){
+        return booksService.addBook(book);
     }
 }

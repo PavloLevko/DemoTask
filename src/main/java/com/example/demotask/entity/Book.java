@@ -18,4 +18,8 @@ public class Book {
     private String title;
     private String author;
     private int amount;
+
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
 }

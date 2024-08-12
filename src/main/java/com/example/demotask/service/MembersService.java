@@ -21,4 +21,8 @@ public class MembersService {
         Member savedMember = repository.save(member);
         return savedMember.getId();
     }
+
+    public void deleteMember(Long id) {
+        repository.deleteById(id);
+    }
 }

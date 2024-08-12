@@ -21,4 +21,9 @@ public class MemberController {
     public Long addMember(@RequestBody Member member){
     return membersService.addMember(member);
     }
+
+    @DeleteMapping("/member/{id}")
+    public void deleteMember(@PathVariable Long id){
+    membersService.deleteMember(id);
+    }
 }

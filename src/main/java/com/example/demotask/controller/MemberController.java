@@ -1,5 +1,6 @@
 package com.example.demotask.controller;
 
+import com.example.demotask.entity.Book;
 import com.example.demotask.entity.Member;
 import com.example.demotask.service.MembersService;
 import lombok.AllArgsConstructor;
@@ -25,5 +26,12 @@ public class MemberController {
     @DeleteMapping("/member/{id}")
     public void deleteMember(@PathVariable Long id){
     membersService.deleteMember(id);
+    }
+    @PostMapping
+    @RequestMapping("/member/{id}")
+    public void addBookForMember(@PathVariable Long id,
+            @RequestBody Book book){
+    membersService.addBook(id, book);
+
     }
 }

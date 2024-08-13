@@ -27,4 +27,13 @@ public class Member {
     protected void onCreate() {
         date = LocalDate.now();
     }
+    public void addBook(Book book) {
+        listOfBooks.add(book);
+        book.setMember(this);
+    }
+
+    public void removeBook(Book book) {
+        listOfBooks.remove(book);
+        book.setMember(null);
+    }
 }

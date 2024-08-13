@@ -18,6 +18,7 @@ public class Book {
     private String title;
     private String author;
     private int amount;
+    private boolean isBorrowed;
 
     @ManyToOne
     @JoinColumn(name = "member_id")

@@ -1,6 +1,7 @@
 package com.example.demotask.service;
 
 import com.example.demotask.entity.Book;
+import com.example.demotask.exception.BookCannotBeDeletedException;
 import com.example.demotask.exception.NotFoundException;
 import com.example.demotask.repository.BooksRepository;
 import lombok.AllArgsConstructor;
@@ -18,26 +19,38 @@ public class BooksService {
 
 
     public List<Book> getAllBooks() {
-     return repository.findAll();
+        return repository.findAll();
     }
-@Transactional
+
+    @Transactional
     public Long addBook(Book book) {
         Book isPresent = repository.findByTitle(book.getTitle());
-        if(isPresent != null){
-            isPresent.setAmount(isPresent.getAmount()+1);
+        if (isPresent != null) {
+            isPresent.setAmount(isPresent.getAmount() + 1);
             return repository.save(isPresent).getId();
-        }else {
+        } else {
             book.setAmount(1);
             return repository.save(book).getId();
         }
     }
 
     public Optional<Book> getById(Long id) {
-      return repository.findById(id);
+        return repository.findById(id);
     }
 
     public void deleteBook(Long id) {
-        repository.deleteById(id);
+        Book isPresentBook = repository.
+                findById(id).orElseThrow(() -> new NotFoundException("Book with id " + id + " not found!"));
+
+        if (isPresentBook.getAmount() > 1) {
+            isPresentBook.setAmount(isPresentBook.getAmount() - 1);
+            repository.save(isPresentBook);
+        } else {
+            if(isPresentBook.isBorrowed()){
+                throw new BookCannotBeDeletedException("Book is borrowed and can't be deleted.");
+            }
+            repository.deleteById(id);
+        }
     }
 
     public Book updateBook(Long id, Book book) {
@@ -48,6 +61,6 @@ public class BooksService {
         bookInDataBase.setAuthor(book.getAuthor());
         bookInDataBase.setAmount(book.getAmount());
 
-      return repository.save(bookInDataBase);
+        return repository.save(bookInDataBase);
     }
 }

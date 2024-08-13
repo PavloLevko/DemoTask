@@ -2,6 +2,7 @@ package com.example.demotask.controller;
 
 import com.example.demotask.entity.Book;
 import com.example.demotask.entity.Member;
+import com.example.demotask.exception.MaxAmountBookException;
 import com.example.demotask.service.MembersService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -28,10 +29,14 @@ public class MemberController {
     membersService.deleteMember(id);
     }
     @PostMapping
-    @RequestMapping("/member/{id}")
+    @RequestMapping("/member/book/{id}")
     public void addBookForMember(@PathVariable Long id,
-            @RequestBody Book book){
+            @RequestBody Book book)  {
     membersService.addBook(id, book);
-
+    }
+    @DeleteMapping("/member/book/{id}")
+    public void deletedBookInMember(@PathVariable Long id,
+                                    @RequestBody Book book){
+    membersService.deleteBookInMember(id, book);
     }
 }

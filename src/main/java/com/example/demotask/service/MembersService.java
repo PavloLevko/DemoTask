@@ -1,6 +1,6 @@
 package com.example.demotask.service;
 
-import com.example.demotask.AppConfig;
+import com.example.demotask.config.AppConfig;
 import com.example.demotask.entity.Book;
 import com.example.demotask.entity.Member;
 import com.example.demotask.exception.*;
@@ -29,9 +29,18 @@ public class MembersService {
         return savedMember.getId();
     }
 
+    public void updateMember(Long id, Member member) {
+        Member memberInDataBase = membersRepository.findById(id).
+                orElseThrow(() -> new NotFoundException("Member with id " + id + "not found!"));
+        memberInDataBase.setName(member.getName());
+        memberInDataBase.setDate(member.getDate());
+
+        membersRepository.save(memberInDataBase);
+    }
+
     public void deleteMember(Long id) {
         Optional<Member> member = membersRepository.findById(id);
-        if (member.get().getListOfBooks() != null){
+        if (member.get().getListOfBooks() != null) {
             throw new MemberCannotBeDeletedException("This member hes borrowed book! Cant be deleted!");
         }
         membersRepository.deleteById(id);
@@ -40,54 +49,48 @@ public class MembersService {
     @Transactional
     public void addBook(Long id, Book book) {
 
-           Member member = membersRepository.findById(id)
-                   .orElseThrow(() -> new NotFoundException("Member not found"));
+        Member member = membersRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Member not found"));
 
-           if(book.getAmount() == 0){
-               throw new ZeroAmountException("All this book was borrow!");
-           }
+        if (book.getAmount() == 0) {
+            throw new ZeroAmountException("All this book was borrow!");
+        }
 
-           if (member.getListOfBooks().size() >= appConfig.getMaxBooks()) {
-               throw new MaxAmountBookException("You have a lot of books for reading. " +
-                       "Max count of book is: " + appConfig.getMaxBooks());
-           }
+        if (member.getListOfBooks().size() >= appConfig.getMaxBooks()) {
+            throw new MaxAmountBookException("You have a lot of books for reading. " +
+                    "Max count of book is: " + appConfig.getMaxBooks());
+        }
 
-           member.addBook(book);
-           book.setAmount(book.getAmount() - 1);
+        member.addBook(book);
+        book.setAmount(book.getAmount() - 1);
 
-           if(book.getAmount() == 0){
-               book.setBorrowed(true);
-           }
+        if (book.getAmount() == 0) {
+            book.setBorrowed(true);
+        }
 
-
-           booksRepository.save(book);
-           membersRepository.save(member);
-
-       }
-
-       @Transactional
-    public void deleteBookInMember (Long id, Book book){
-
-           Member member = membersRepository.findById(id)
-                   .orElseThrow(() -> new NotFoundException("Member not found"));
-           Book isPresentBook = booksRepository.findByTitle(book.getTitle());
-           if(isPresentBook != null) {
-
-
-               if (book.isBorrowed()) {
-                   throw new BookBorrowedException("This book is borrowed!");
-               }
-
-
-               member.removeBook(book);
-               book.setAmount(book.getAmount() + 1);
-               book.setBorrowed(false);
-
-               booksRepository.save(book);
-               membersRepository.save(member);
-           } else {
-               throw new NotFoundException("Member doesnt have this book!");
-           }
-       }
+        booksRepository.save(book);
+        membersRepository.save(member);
     }
 
+    @Transactional
+    public void deleteBookInMember(Long id, Book book) {
+
+        Member member = membersRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Member not found"));
+        Book isPresentBook = booksRepository.findByTitle(book.getTitle());
+        if (isPresentBook != null) {
+            if (book.isBorrowed()) {
+                throw new BookBorrowedException("This book is borrowed!");
+            }
+
+            member.removeBook(book);
+            book.setAmount(book.getAmount() + 1);
+            book.setBorrowed(false);
+
+            booksRepository.save(book);
+            membersRepository.save(member);
+        } else {
+            throw new NotFoundException("Member doesnt have this book!");
+        }
+    }
+}

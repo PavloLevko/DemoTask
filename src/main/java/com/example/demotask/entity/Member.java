@@ -1,5 +1,6 @@
 package com.example.demotask.entity;
 
+import com.example.demotask.validation.ValidName;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,14 +20,17 @@ public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @ValidName
     private String name;
     private LocalDate date;
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Book> listOfBooks = new ArrayList<>();
+
     @PrePersist
     protected void onCreate() {
         date = LocalDate.now();
     }
+
     public void addBook(Book book) {
         listOfBooks.add(book);
         book.setMember(this);

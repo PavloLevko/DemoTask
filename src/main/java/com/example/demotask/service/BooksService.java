@@ -5,7 +5,6 @@ import com.example.demotask.exception.BookCannotBeDeletedException;
 import com.example.demotask.exception.NotFoundException;
 import com.example.demotask.repository.BooksRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,7 +45,7 @@ public class BooksService {
             isPresentBook.setAmount(isPresentBook.getAmount() - 1);
             repository.save(isPresentBook);
         } else {
-            if(isPresentBook.isBorrowed()){
+            if (isPresentBook.isBorrowed()) {
                 throw new BookCannotBeDeletedException("Book is borrowed and can't be deleted.");
             }
             repository.deleteById(id);

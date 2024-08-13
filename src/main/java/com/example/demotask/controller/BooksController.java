@@ -14,26 +14,31 @@ import java.util.Optional;
 
 public class BooksController {
     private final BooksService booksService;
+
     @GetMapping("/books")
-    public List<Book> getAllBook(){
-   return booksService.getAllBooks();
+    public List<Book> getAllBook() {
+        return booksService.getAllBooks();
     }
+
     @GetMapping("/{id}")
-    public Optional<Book> getBookById(@PathVariable Long id){
-       return booksService.getById(id);
+    public Optional<Book> getBookById(@PathVariable Long id) {
+        return booksService.getById(id);
     }
+
     @PostMapping
     @RequestMapping("/book")
-    public Long addBook(@RequestBody Book book){
+    public Long addBook(@RequestBody Book book) {
         return booksService.addBook(book);
     }
+
     @PutMapping("/book/{id}")
     public Book updateBook(@PathVariable Long id,
-                           @RequestBody Book book){
-      return booksService.updateBook(id, book);
+                           @RequestBody Book book) {
+        return booksService.updateBook(id, book);
     }
+
     @DeleteMapping("/book/{id}")
-    public void deleteBookById(@PathVariable Long id){
+    public void deleteBookById(@PathVariable Long id) {
         booksService.deleteBook(id);
     }
 }

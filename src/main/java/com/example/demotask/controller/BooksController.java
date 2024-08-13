@@ -1,6 +1,7 @@
 package com.example.demotask.controller;
 
 import com.example.demotask.entity.Book;
+import com.example.demotask.entity.Member;
 import com.example.demotask.service.BooksService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -40,5 +41,10 @@ public class BooksController {
     @DeleteMapping("/book/{id}")
     public void deleteBookById(@PathVariable Long id) {
         booksService.deleteBook(id);
+    }
+
+    @GetMapping("/books/member/{name}")
+    public List<Book> getAllBookByMember(@PathVariable String name){
+     return booksService.getAllBooksByMember(name);
     }
 }
